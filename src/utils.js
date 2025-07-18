@@ -22,8 +22,9 @@ const safetyMkdir = async rawPath => {
   return Promise.resolve();
 };
 
-const removeArtifacts = async paths =>
-  Promise.all(paths.map(path => new Promise(resolve => rimraf(path, resolve))));
+const removeArtifacts = async paths => {
+  return Promise.all(paths.map(p => util.promisify(rimraf)(p)));
+};
 
 const prepareEnv = ({ pathToStatic, pathToPublic }) => () => {
   const pathToStaticDir = path.resolve(pathToStatic);

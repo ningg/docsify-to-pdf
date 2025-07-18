@@ -10,12 +10,14 @@ const renderPdf = async ({
   pdfOptions,
   docsifyRendererPort,
   emulateMedia,
+  pageBreak,
 }) => {
   const browser = await puppeteer.launch({
     defaultViewport: {
       width: 1200,
       height: 1000,
     },
+    executablePath: pdfOptions.executablePath,
   });
   try {
     const mainMdFilenameWithoutExt = path.parse(mainMdFilename).name;
@@ -32,7 +34,31 @@ const renderPdf = async ({
     if (renderProcessingErrors.length)
       logger.warn("anchors processing errors", renderProcessingErrors);
 
-    await page.emulateMedia(emulateMedia);
+    await page.emulateMediaType(emulateMedia);
+    
+    // 根据配置添加分页符样式
+    if (pageBreak && pageBreak.enabled && pageBreak.type === 'css') {
+      await page.addStyleTag({
+        content: pageBreak.css || `
+          .markdown-section h1, .markdown-section h2, .markdown-section h3 {
+            page-break-before: always;
+          }
+          .markdown-section h1:first-child, .markdown-section h2:first-child, .markdown-section h3:first-child {
+            page-break-before: avoid;
+          }
+          .markdown-section {
+            page-break-inside: avoid;
+          }
+          .markdown-section h1, .markdown-section h2, .markdown-section h3 {
+            break-before: page;
+          }
+          .markdown-section h1:first-child, .markdown-section h2:first-child, .markdown-section h3:first-child {
+            break-before: avoid;
+          }
+        `
+      });
+    }
+    
     await page.pdf({
       ...pdfOptions,
       path: path.resolve(pathToPublic),
@@ -53,6 +79,7 @@ const htmlToPdf = ({
   removeTemp,
   docsifyRendererPort,
   emulateMedia,
+  pageBreak,
 }) => async () => {
   const { closeProcess } = require("./utils.js")({ pathToStatic, removeTemp });
   try {
@@ -63,6 +90,7 @@ const htmlToPdf = ({
       pdfOptions,
       docsifyRendererPort,
       emulateMedia,
+      pageBreak,
     });
   } catch (err) {
     logger.err("puppeteer renderer error:", err);

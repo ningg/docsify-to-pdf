@@ -8,7 +8,7 @@ const [readFile, writeFile, exists] = [fs.readFile, fs.writeFile, fs.exists].map
   util.promisify(fn),
 );
 
-const combineMarkdowns = ({ contents, pathToStatic, mainMdFilename, pathToDocsifyEntryPoint }) => async links => {
+const combineMarkdowns = ({ contents, pathToStatic, mainMdFilename, pathToDocsifyEntryPoint, pageBreak }) => async links => {
   try {
 
     const files = await Promise.all(
@@ -32,9 +32,14 @@ const combineMarkdowns = ({ contents, pathToStatic, mainMdFilename, pathToDocsif
       const resultFilePath = path.resolve(pathToDocsifyEntryPoint, pathToStatic, mainMdFilename);
 
     try {
+      // 根据配置决定是否添加分页符
+      const separator = pageBreak && pageBreak.enabled && pageBreak.type === 'div' 
+        ? (pageBreak.html || "\n\n<div style='page-break-after: always;'></div>\n\n")
+        : "\n\n\n\n";
+      
       const content = files
         .map(({ content, name }) => beautifyImages({ pathToDocsifyEntryPoint, pathToStatic })(content, name))
-        .join("\n\n\n\n");
+        .join(separator);
       await writeFile(resultFilePath, content);
     } catch (e) {
       logger.err(e);
