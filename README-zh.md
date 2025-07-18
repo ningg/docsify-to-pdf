@@ -1,5 +1,7 @@
 # docsify-to-pdf
 
+[English](README.md) | [中文](README-zh.md)
+
 > docsify-to-pdf 远端库版本，已经不兼容了，请使用本地库版本。
 
 ## 本地库版本使用
