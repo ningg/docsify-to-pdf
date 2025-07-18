@@ -1,43 +1,43 @@
 # docsify-to-pdf
 
-> The remote repository version of docsify-to-pdf is no longer compatible. Please use the local repository version.
+> docsify-to-pdf 远端库版本，已经不兼容了，请使用本地库版本。
 
-## Local Repository Usage
+## 本地库版本使用
 
-### 1. Build Link
+### 1.构建 link
 
-Download the current code to your local machine, then install dependencies.
+将当前代码下载到本地，然后安装依赖。
 
 ```sh
-# Download code
+# 下载代码
 git clone https://github.com/ningg/docsify-to-pdf.git
 cd docsify-to-pdf
-# Install dependencies
+# 安装依赖
 npm install
-# Build link
+# 构建 link
 npm link
 ```
 
-### 2. Use Link
+### 2.使用 link
 
-In other projects where you want to use docsify-to-pdf (e.g., `/path/to/your/other/project`), execute:
+在希望使用 docsify-to-pdf 的其他项目中（比如：`/path/to/your/other/project`），执行：
 
 ```sh
 cd /path/to/your/other/project
 npm link docsify-to-pdf
 ```
 
-And add a `.docsifytopdfrc.js` file in the directory with the following content:
+并且在目录中，添加 `.docsifytopdfrc.js` 文件，内容如下：
 
 ```js
 module.exports = {
-    // Required: Specify array of table of contents file paths
+    // 必需：指定目录文件路径数组
     contents: ["_sidebar.md"],
     
-    // Required: PDF output path
+    // 必需：PDF 输出路径
     pathToPublic: "pdf/LLM_30_Essential_Lectures_AI.pdf",
     
-    // Optional: PDF options (Puppeteer configuration)
+    // 可选：PDF 选项（Puppeteer 配置）
     // https://pptr.dev/api/puppeteer.pdfoptions
     pdfOptions: {
       format: "A4",
@@ -50,36 +50,37 @@ module.exports = {
       printBackground: true,
       displayHeaderFooter: true,
       headerTemplate: '<span>title</span>',  
-      footerTemplate: '<div style="font-size: 10px; text-align: center; width: 100%;">Page <span class="pageNumber"></span> of <span class="totalPages"></span></div>'
+      footerTemplate: '<div style="font-size: 10px; text-align: center; width: 100%;">第 <span class="pageNumber"></span> 页，共 <span class="totalPages"></span> 页</div>'
     },
 
-    // Required: Chrome browser executable file path
+    // 必填：Chrome 浏览器可执行文件路径
     chromeExecutablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
     
-    // Optional: Whether to remove temporary files
+    // 可选：是否删除临时文件
     removeTemp: true,
     
-    // Optional: Media type emulation (print or screen)
+    // 可选：媒体类型模拟（print 或 screen）
+    // https://pptr.dev/api/puppeteer.page.emulatemediatype
     emulateMedia: "screen",
     
-    // Optional: Static files path
+    // 可选：静态文件路径
     pathToStatic: "static",
     
-    // Optional: Main Markdown filename
+    // 可选：主 Markdown 文件名
     mainMdFilename: "README.md",
     
-    // Optional: docsify entry point path
+    // 可选：docsify 入口点路径
     pathToDocsifyEntryPoint: ".",
     
-    // Optional: Page break configuration
+    // 可选：分页符配置
     pageBreak: {
-      // Whether to enable page breaks
+      // 是否启用分页符
       enabled: true,
-      // Page break style: 'div' or 'css'
+      // 分页符样式：'div' 或 'css'
       type: 'div',
-      // Custom page break HTML (used when type is 'div')
+      // 自定义分页符 HTML（当 type 为 'div' 时使用）
       html: '<div style="page-break-after: always;"></div>',
-      // Custom CSS styles (used when type is 'css')
+      // 自定义 CSS 样式（当 type 为 'css' 时使用）
       css: `
         .markdown-section h1, .markdown-section h2, .markdown-section h3 {
           page-break-before: always;
@@ -101,7 +102,8 @@ module.exports = {
   };
 ```
 
-Then add a script in the `package.json` file in the directory:
+
+再在目录下的 `package.json` 中，添加脚本：
 
 ```json
 {
@@ -111,20 +113,9 @@ Then add a script in the `package.json` file in the directory:
 }
 ```
 
-Finally, execute in the current directory:
+最后，当前目录下，执行：
 
 ```sh
 npm run convert
 ```
 
-## Contributing
-
-- Fork it!
-- Create your feature branch: `git checkout -b my-new-feature`
-- Commit your changes: `git commit -am 'Add some feature'`
-- Push to the branch: `git push origin my-new-feature`
-- Submit a pull request
-
-Your pull requests and issues are welcome!
-
-Base on docsify-to-pdf
